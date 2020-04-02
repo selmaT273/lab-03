@@ -1,28 +1,55 @@
 'use strict';
 
-const pics = [];
+const templateId = '#photo-template';
+let templateHtml = $(templateId).html();
+
+let picObject = {
+  title: '',
+  image_url: '',
+  description: '',
+  keyword: '',
+  horns:'',
+};
+
+let html = Mustache.render(templateHtml, picObject);
+
+$('#picsId').append(html);
+// const pics = [];
 const keywords = [];
 // let horns = [];
 
-function Pic(pic) {
-  this.image_url = pic.image_url;
-  this.title = pic.title;
-  this.description = pic.description;
-  this.keyword = pic.keyword;
-  this.horns = pic.horns;
-  pics.push(this);
+function Pic(data) {
+  for(let key in data) {
+    console.log(key);
+    this[key] = data[key];
+  }
+  // pics.push(this);
 }
 
-Pic.prototype.render = function (container) {
-  let $container = $(container);
-  let $template = $('#photo-template');
-  let $pic = $template.clone();
-  $pic.removeAttr('id');
-  $pic.find('h2.pic-name').text(this.title);
-  $pic.find('img.pic-display').attr('src', this.image_url);
-  $pic.find('p').text(this.description);
-  $container.append($pic);
+Pic.prototype.toHtml = function () {
+  let templateHtml = $(templateId).html();
+  let html = Mustache.render(templateHtml, this);
+  return html;
 };
+
+const ajaxSettings = {
+  method: 'get',
+  dataType: 'json'
+};
+
+let imgs = null;
+$.ajax('data/page-1.json', ajaxSettings).then(function(data) {
+  imgs = data;
+  imgs.forEach(picData => {
+    let pic = new Pic(picData);
+    console.log(pic);
+    $('#picsId').append(pic.toHtml());
+  });
+  imgs.forEach(pic => filterPics(pic));
+
+});
+
+
 
 function filterPics(pic){
   let $filter = $('.filter');
@@ -35,21 +62,11 @@ function filterPics(pic){
     $filter.append($makeFilter);
   }
 }
-const ajaxSettings = {
-  method: 'get',
-  dataType: 'json'
-};
 
-let imgs = null;
-$.ajax('data/page-1.json', ajaxSettings).then(function(data) {
-  imgs = data;
-  renderElement('default');
-  imgs.forEach(pic => filterPics(pic));
 
-});
 
 function renderElement(filter) {
-  $('main').empty();
+  $('#picId').empty();
   imgs.forEach((pic) => {
     let displayPic = new Pic(pic);
     if (displayPic.keyword === filter) {
@@ -71,6 +88,7 @@ function reloadPage(){
   location.reload(true);
 }
 
+
 function sortAlphabetical(a, b) {
   const picTitleA = a.title;
   const picTitleB = b.title;
@@ -82,3 +100,4 @@ function sortAlphabetical(a, b) {
   }
   return comparison;
 }
+
