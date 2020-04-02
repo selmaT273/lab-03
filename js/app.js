@@ -28,37 +28,22 @@ const ajaxSettings = {
   dataType: 'json'
 };
 
-function firstPage() {
-  pageOne.forEach(picData => {
-    let pic = new Pic(picData);
-    console.log(pic);
-    $('#picsId').append(pic.toHtml());
+let pageData;
+function loadPage1() {
+  $.ajax('data/page-1.json', ajaxSettings).then(function (data) {
+    pageData = data;
+    renderElement();
   });
-  pageOne.forEach(pic => filterPics(pic));
 }
+$('#pageOne').on('click', loadPage1);
 
-function secondPage() {
-  pageTwo.forEach(picData => {
-    let pic = new Pic(picData);
-    console.log(pic);
-    $('#picsId').append(pic.toHtml());
+function loadPage2() {
+  $.ajax('data/page-2.json', ajaxSettings).then(function(data) {
+    pageData = data;
+    renderElement();
   });
-  pageTwo.forEach(pic => filterPics(pic));
 }
-
-// automatically set as null
-let pageOne;
-
-$.ajax('data/page-1.json', ajaxSettings).then(function (data) {
-  pageOne = data;
-  firstPage();
-});
-
-let pageTwo;
-$.ajax('data/page-2.json', ajaxSettings).then(function(data) {
-  pageTwo = data;
-  secondPage();
-});
+$('#pageTwo').on('click', loadPage2);
 // on click clear and then call secondPage()
 
 function filterPics(pic) {
@@ -75,9 +60,11 @@ function filterPics(pic) {
 
 
 
-function renderElement(filter) {
+function renderElement() {
+  const filter = $('.filter').val();
+
   $('section').empty();
-  pageOne.forEach((pic) => {
+  pageData.forEach((pic) => {
     let displayPic = new Pic(pic);
     if (displayPic.keyword === filter) {
       $('#picsId').append(displayPic.toHtml());
@@ -88,15 +75,13 @@ function renderElement(filter) {
 }
 
 $('.filter').on('change', function () {
-  let $this = $(this),
-    filterValue = $this.val();
-
-  renderElement(filterValue);
+  renderElement();
 });
 
 function reloadPage() {
   location.reload(true);
 }
+$('#clear-filter').on('click', reloadPage);
 
 
 function sortAlphabetical(a, b) {
@@ -110,3 +95,14 @@ function sortAlphabetical(a, b) {
   }
   return comparison;
 }
+
+function sortPage() {
+  console.log('sorting!');
+
+  pageData.sort(sortAlphabetical);
+  console.log(pageData);
+
+  renderElement();
+}
+
+$('#sort').on('click', sortPage);
