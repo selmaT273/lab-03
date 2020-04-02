@@ -98,6 +98,10 @@ function reloadPage() {
   location.reload(true);
 }
 
+$('#clear-filter').on('click', reloadPage);
+
+
+
 
 function sortAlphabetical(a, b) {
   const picTitleA = a.title;
@@ -110,3 +114,13 @@ function sortAlphabetical(a, b) {
   }
   return comparison;
 }
+
+function sortPage() {
+  pageOne.sort(sortAlphabetical);
+  renderElement('default');
+
+  const filterValue = $('.filter').val();
+  renderElement(filterValue);
+}
+
+$('.sort').on('click', sortPage);
