@@ -1,8 +1,8 @@
 'use strict';
 
-// $(document).load(function () {
-//   $('div:first-of-type').addClass('first');
-// });
+$(document).ready(function() {
+  loadPageOne();
+});
 
 const templateId = '#photo-template';
 // let templateHtml = $(templateId).html();
@@ -27,36 +27,20 @@ const ajaxSettings = {
   dataType: 'json'
 };
 
-// function firstPage() {
-//   pageOne.forEach(picData => {
-//     let pic = new Pic(picData);
-//     console.log(pic);
-//     $('#picsId').append(pic.toHtml());
-//   });
-//   pageOne.forEach(pic => filterPics(pic));
-// }
-
-function renderPage(pics) {
-  pics.forEach(picData => {
-    let pic = new Pic(picData);
-    console.log(pic);
-    $('#picsId').append(pic.toHtml());
+let pageData;
+function loadPageOne() {
+  $.ajax('data/page-1.json', ajaxSettings).then(function (data) {
+    pageData = data;
+    renderElement();
   });
-  pics.forEach(pic => filterPics(pic));
 }
+$('#pageOne').on('click', loadPageOne);
 
-let pageOne;
-
-$.ajax('data/page-1.json', ajaxSettings).then(function (data) {
-  pageOne = data;
-  firstPage();
-});
 
 function loadPageTwo () {
-  let pageTwo;
   $.ajax('data/page-2.json', ajaxSettings).then(function(data) {
-    pageTwo = data;
-    renderPage(pageTwo);
+    pageData = data;
+    renderElement();
   });
 }
 $('#pageTwo').on('click', loadPageTwo);
@@ -73,9 +57,11 @@ function filterPics(pic) {
   }
 }
 
-function renderElement(filter) {
+function renderElement() {
+  const filter = $('.filter').val();
+
   $('section').empty();
-  pageOne.forEach((pic) => {
+  pageData.forEach((pic) => {
     let displayPic = new Pic(pic);
     if (displayPic.keyword === filter) {
       $('#picsId').append(displayPic.toHtml());
@@ -86,16 +72,12 @@ function renderElement(filter) {
 }
 
 $('.filter').on('change', function () {
-  let $this = $(this),
-    filterValue = $this.val();
-
-  renderElement(filterValue);
+  renderElement();
 });
 
 function reloadPage() {
   location.reload(true);
 }
-
 $('#clear-filter').on('click', reloadPage);
 
 function sortAlphabetical(a, b) {
@@ -111,11 +93,8 @@ function sortAlphabetical(a, b) {
 }
 
 function sortPage() {
-  pageOne.sort(sortAlphabetical);
-  renderElement('default');
-
-  const filterValue = $('.filter').val();
-  renderElement(filterValue);
+  pageData.sort(sortAlphabetical);
+  renderElement();
 }
 
 $('.sort').on('click', sortPage);
