@@ -1,0 +1,14 @@
+section {
+    float: left;
+    width: 400px;
+    height: 400px;
+    margin: 15px;
+    text-align: center;
+}
+
+
+section img {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 15px;
+}
