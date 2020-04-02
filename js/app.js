@@ -5,7 +5,7 @@
 // });
 
 const templateId = '#photo-template';
-let templateHtml = $(templateId).html();
+// let templateHtml = $(templateId).html();
 const keywords = [];
 
 
@@ -14,7 +14,6 @@ function Pic(data) {
     console.log(key);
     this[key] = data[key];
   }
-  // pics.push(this);
 }
 
 Pic.prototype.toHtml = function () {
@@ -28,25 +27,24 @@ const ajaxSettings = {
   dataType: 'json'
 };
 
-function firstPage() {
-  pageOne.forEach(picData => {
+// function firstPage() {
+//   pageOne.forEach(picData => {
+//     let pic = new Pic(picData);
+//     console.log(pic);
+//     $('#picsId').append(pic.toHtml());
+//   });
+//   pageOne.forEach(pic => filterPics(pic));
+// }
+
+function renderPage(pics) {
+  pics.forEach(picData => {
     let pic = new Pic(picData);
     console.log(pic);
     $('#picsId').append(pic.toHtml());
   });
-  pageOne.forEach(pic => filterPics(pic));
+  pics.forEach(pic => filterPics(pic));
 }
 
-function secondPage() {
-  pageTwo.forEach(picData => {
-    let pic = new Pic(picData);
-    console.log(pic);
-    $('#picsId').append(pic.toHtml());
-  });
-  pageTwo.forEach(pic => filterPics(pic));
-}
-
-// automatically set as null
 let pageOne;
 
 $.ajax('data/page-1.json', ajaxSettings).then(function (data) {
@@ -54,12 +52,14 @@ $.ajax('data/page-1.json', ajaxSettings).then(function (data) {
   firstPage();
 });
 
-let pageTwo;
-$.ajax('data/page-2.json', ajaxSettings).then(function(data) {
-  pageTwo = data;
-  secondPage();
-});
-// on click clear and then call secondPage()
+function loadPageTwo () {
+  let pageTwo;
+  $.ajax('data/page-2.json', ajaxSettings).then(function(data) {
+    pageTwo = data;
+    renderPage(pageTwo);
+  });
+}
+$('#pageTwo').on('click', loadPageTwo);
 
 function filterPics(pic) {
   let $filter = $('.filter');
@@ -72,8 +72,6 @@ function filterPics(pic) {
     $filter.append($makeFilter);
   }
 }
-
-
 
 function renderElement(filter) {
   $('section').empty();
@@ -99,9 +97,6 @@ function reloadPage() {
 }
 
 $('#clear-filter').on('click', reloadPage);
-
-
-
 
 function sortAlphabetical(a, b) {
   const picTitleA = a.title;
