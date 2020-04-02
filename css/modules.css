@@ -23,7 +23,7 @@ header {
 
 
 
-main {
+#picsId {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -31,7 +31,7 @@ main {
 
 p {
     margin: 0 auto;
-    display:block;
+    display: block;
     width: 200px;
     
 }
@@ -61,11 +61,11 @@ button:hover {
     color: #F39C12; 
 } 
 
-section {
+div {
     background-color: white;
     border-radius: 200px;
 }
 
-/* #photo-template {
+div:first-of-type {
     display: none;
-} */
+}
