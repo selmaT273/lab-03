@@ -14,8 +14,9 @@
     <script id="photo-template" type="text/x-tmpl-mustache">
       <div>
         <h2>{{title}}</h2>
-        <img src={{image_url}} alt="" class="pic-display">
+        <img src={{image_url}} alt="{{title}}" class="pic-display">
         <p>{{description}}</p>
+      </div>
     </script>
 
   </head>
@@ -28,8 +29,10 @@
       <!-- <select class="horns-filter">
         <option value="default">Filter by # of Horns</option>
       </select> -->
-      <button type="button" onclick="reloadPage();">Clear Filter</button>
+      <button type="button" id="clear-filter">Clear Filter</button>
       <button type="button" class="sort">Sort A-Z</button>
+      <button id="pageOne">1</button>
+      <button id="pageTwo">2</button>
     </header>
     <main>
       <section id="picsId">

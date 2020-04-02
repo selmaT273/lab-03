@@ -1,11 +1,11 @@
 'use strict';
 
-// $(document).load(function () {
-//   $('div:first-of-type').addClass('first');
-// });
+$(document).ready(function() {
+  loadPageOne();
+});
 
 const templateId = '#photo-template';
-let templateHtml = $(templateId).html();
+// let templateHtml = $(templateId).html();
 const keywords = [];
 
 
@@ -14,7 +14,6 @@ function Pic(data) {
     console.log(key);
     this[key] = data[key];
   }
-  // pics.push(this);
 }
 
 Pic.prototype.toHtml = function () {
@@ -28,38 +27,23 @@ const ajaxSettings = {
   dataType: 'json'
 };
 
-function firstPage() {
-  pageOne.forEach(picData => {
-    let pic = new Pic(picData);
-    console.log(pic);
-    $('#picsId').append(pic.toHtml());
+let pageData;
+function loadPageOne() {
+  $.ajax('data/page-1.json', ajaxSettings).then(function (data) {
+    pageData = data;
+    renderElement();
   });
-  pageOne.forEach(pic => filterPics(pic));
 }
+$('#pageOne').on('click', loadPageOne);
 
-function secondPage() {
-  pageTwo.forEach(picData => {
-    let pic = new Pic(picData);
-    console.log(pic);
-    $('#picsId').append(pic.toHtml());
+
+function loadPageTwo () {
+  $.ajax('data/page-2.json', ajaxSettings).then(function(data) {
+    pageData = data;
+    renderElement();
   });
-  pageTwo.forEach(pic => filterPics(pic));
 }
-
-// automatically set as null
-let pageOne;
-
-$.ajax('data/page-1.json', ajaxSettings).then(function (data) {
-  pageOne = data;
-  firstPage();
-});
-
-let pageTwo;
-$.ajax('data/page-2.json', ajaxSettings).then(function(data) {
-  pageTwo = data;
-  secondPage();
-});
-// on click clear and then call secondPage()
+$('#pageTwo').on('click', loadPageTwo);
 
 function filterPics(pic) {
   let $filter = $('.filter');
@@ -73,31 +57,29 @@ function filterPics(pic) {
   }
 }
 
+function renderElement() {
+  const filter = $('.filter').val();
 
-
-function renderElement(filter) {
   $('section').empty();
-  pageOne.forEach((pic) => {
+  pageData.forEach((pic) => {
     let displayPic = new Pic(pic);
     if (displayPic.keyword === filter) {
       $('#picsId').append(displayPic.toHtml());
     } else if (filter === 'default') {
       $('#picsId').append(displayPic.toHtml());
     }
+    filterPics(displayPic);
   });
 }
 
 $('.filter').on('change', function () {
-  let $this = $(this),
-    filterValue = $this.val();
-
-  renderElement(filterValue);
+  renderElement();
 });
 
 function reloadPage() {
   location.reload(true);
 }
-
+$('#clear-filter').on('click', reloadPage);
 
 function sortAlphabetical(a, b) {
   const picTitleA = a.title;
@@ -110,3 +92,10 @@ function sortAlphabetical(a, b) {
   }
   return comparison;
 }
+
+function sortPage() {
+  pageData.sort(sortAlphabetical);
+  renderElement();
+}
+
+$('.sort').on('click', sortPage);
