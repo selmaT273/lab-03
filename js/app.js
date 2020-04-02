@@ -68,6 +68,7 @@ function renderElement() {
     } else if (filter === 'default') {
       $('#picsId').append(displayPic.toHtml());
     }
+    filterPics(displayPic);
   });
 }
 
