@@ -8,7 +8,7 @@ let picObject = {
   image_url: '',
   description: '',
   keyword: '',
-  horns:'',
+  horns: '',
 };
 
 let html = Mustache.render(templateHtml, picObject);
@@ -19,7 +19,7 @@ const keywords = [];
 // let horns = [];
 
 function Pic(data) {
-  for(let key in data) {
+  for (let key in data) {
     console.log(key);
     this[key] = data[key];
   }
@@ -37,21 +37,39 @@ const ajaxSettings = {
   dataType: 'json'
 };
 
-let imgs = null;
-$.ajax('data/page-1.json', ajaxSettings).then(function(data) {
-  imgs = data;
-  imgs.forEach(picData => {
+function firstPage() {
+  pageOne.forEach(picData => {
     let pic = new Pic(picData);
     console.log(pic);
     $('#picsId').append(pic.toHtml());
   });
-  imgs.forEach(pic => filterPics(pic));
+  pageOne.forEach(pic => filterPics(pic));
+}
 
+function secondPage() {
+  pageTwo.forEach(picData => {
+    let pic = new Pic(picData);
+    console.log(pic);
+    $('#picsId').append(pic.toHtml());
+  });
+  pageTwo.forEach(pic => filterPics(pic));
+}
+
+// automatically set as null
+let pageOne;
+
+$.ajax('data/page-1.json', ajaxSettings).then(function (data) {
+  pageOne = data;
+  firstPage();
 });
 
+let pageTwo;
+$.ajax('data/page-2.json', ajaxSettings).then(function(data) {
+  pageTwo = data;
+});
+// on click clear and then call secondPage()
 
-
-function filterPics(pic){
+function filterPics(pic) {
   let $filter = $('.filter');
   let $makeFilter = $('<option>').addClass('styleFilter');
   $makeFilter.text(pic.keyword);
@@ -66,25 +84,25 @@ function filterPics(pic){
 
 
 function renderElement(filter) {
-  $('#picId').empty();
-  imgs.forEach((pic) => {
+  $('section').empty();
+  pageOne.forEach((pic) => {
     let displayPic = new Pic(pic);
     if (displayPic.keyword === filter) {
-      displayPic.render('main');
+      $('#picsId').append(displayPic.toHtml());
     } else if (filter === 'default') {
-      displayPic.render('main');
+      $('#picsId').append(displayPic.toHtml());
     }
   });
 }
 
-$('.filter').on('change', function() {
+$('.filter').on('change', function () {
   let $this = $(this),
     filterValue = $this.val();
 
   renderElement(filterValue);
 });
 
-function reloadPage(){
+function reloadPage() {
   location.reload(true);
 }
 
@@ -100,4 +118,3 @@ function sortAlphabetical(a, b) {
   }
   return comparison;
 }
-
