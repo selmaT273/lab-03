@@ -97,6 +97,7 @@ $('.filter').on('change', function () {
 function reloadPage() {
   location.reload(true);
 }
+$('#clear-filter').on('click', reloadPage);
 
 
 function sortAlphabetical(a, b) {
@@ -110,3 +111,15 @@ function sortAlphabetical(a, b) {
   }
   return comparison;
 }
+
+function sortPage() {
+  console.log('sorting!');
+
+  pageOne.sort(sortAlphabetical);
+  console.log(pageOne);
+
+  var filterValue = $('.filter').val();
+  renderElement(filterValue);
+}
+
+$('#sort').on('click', sortPage);
