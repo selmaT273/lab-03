@@ -11,6 +11,13 @@
     <link rel="stylesheet" href="css/layouts.css">
     <link rel="stylesheet" href="css/modules.css">
     <link href="https://fonts.googleapis.com/css2?family=Handlee&display=swap" rel="stylesheet">
+    <script id="photo-template" type="text/x-tmpl-mustache">
+      <div>
+        <h2>{{title}}</h2>
+        <img src={{image_url}} alt="" class="pic-display">
+        <p>{{description}}</p>
+    </script>
+
   </head>
   <body>
     <header>
@@ -25,17 +32,16 @@
       <button type="button" class="sort">Sort A-Z</button>
     </header>
     <main>
+      <section id="picsId">
+        
+      </section>
     </main>
 
   
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+  <script src="https://unpkg.com/mustache@latest"></script>
     <script src="js/app.js"></script>
 
-    <section id="photo-template">
-      <h2 class="pic-name"></h2>
-      <img src="" alt="" class="pic-display">
-      <p></p>
-    </section>
   </body>
 </html>
 
