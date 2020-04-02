@@ -66,6 +66,6 @@ div {
     border-radius: 200px;
 }
 
-div:first-of-type {
+/* section > div:first-of-type {
     display: none;
-}
+} */

@@ -1,22 +1,13 @@
 'use strict';
 
+// $(document).load(function () {
+//   $('div:first-of-type').addClass('first');
+// });
+
 const templateId = '#photo-template';
 let templateHtml = $(templateId).html();
-
-let picObject = {
-  title: '',
-  image_url: '',
-  description: '',
-  keyword: '',
-  horns: '',
-};
-
-let html = Mustache.render(templateHtml, picObject);
-
-$('#picsId').append(html);
-// const pics = [];
 const keywords = [];
-// let horns = [];
+
 
 function Pic(data) {
   for (let key in data) {
@@ -66,6 +57,7 @@ $.ajax('data/page-1.json', ajaxSettings).then(function (data) {
 let pageTwo;
 $.ajax('data/page-2.json', ajaxSettings).then(function(data) {
   pageTwo = data;
+  secondPage();
 });
 // on click clear and then call secondPage()
 
